@@ -1,4 +1,17 @@
 import { z } from "zod";
+import {
+  LEGACY_STUDENT_ID_PATTERN,
+  STUDENT_ID_MAX_LENGTH,
+  STUDENT_ID_PATTERN,
+} from "@/lib/utils/student-id";
+
+const studentIdSchema = z
+  .string()
+  .max(STUDENT_ID_MAX_LENGTH, "Student ID must not exceed 13 characters")
+  .refine(
+    (value) => STUDENT_ID_PATTERN.test(value) || LEGACY_STUDENT_ID_PATTERN.test(value),
+    "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)"
+  );
 
 export const loginSchema = z.object({
   identifier: z.string().min(1, "Identifier is required"),
@@ -22,7 +35,7 @@ export const barcodeRegenerateSchema = z.object({
 });
 
 export const rewardRedemptionSchema = z.object({
-  rewardId: z.string().min(1),
+  rewardId: z.coerce.number().int().positive(),
 });
 
 export const rewardCreateSchema = z.object({
@@ -41,7 +54,11 @@ export const rewardCreateSchema = z.object({
 });
 
 export const studentCreateSchema = z.object({
-  studentId: z.string().min(1),
+  studentId: z
+    .string()
+    .min(1)
+    .max(STUDENT_ID_MAX_LENGTH, "Student ID must not exceed 13 characters")
+    .regex(STUDENT_ID_PATTERN, "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)"),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email().optional().or(z.literal("")),
@@ -51,7 +68,7 @@ export const studentCreateSchema = z.object({
 });
 
 export const studentUpdateSchema = z.object({
-  studentId: z.string().min(1).optional(),
+  studentId: studentIdSchema.optional(),
   firstName: z.string().min(1).optional(),
   lastName: z.string().min(1).optional(),
   email: z.string().email().optional().or(z.literal("")).nullable(),
@@ -91,7 +108,7 @@ export const reportQuerySchema = z.object({
 });
 
 export const notificationReadSchema = z.object({
-  notificationIds: z.array(z.string()).optional(),
+  notificationIds: z.array(z.coerce.number().int().positive()).optional(),
   markAll: z.boolean().optional(),
 });
 

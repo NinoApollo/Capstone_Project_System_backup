@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   if (session!.user.role === RoleName.STUDENT) {
     const student = await prisma.student.findFirst({
-      where: { userId: session!.user.id },
+      where: { userId: Number(session!.user.id) },
       include: {
         achievements: { include: { achievement: true }, orderBy: { unlockedAt: "desc" } },
         redemptions: {

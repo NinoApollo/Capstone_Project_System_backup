@@ -61,14 +61,14 @@ async function main() {
 
   // Students
   const studentData = [
-    { studentId: "2021-10001", firstName: "Maria", lastName: "Santos", course: "BS Computer Science", year: 3, bottles: 245, points: 2450, email: "maria@student.edu" },
-    { studentId: "2021-10002", firstName: "James", lastName: "Rivera", course: "BS Environmental Science", year: 4, bottles: 198, points: 1980, email: "james@student.edu" },
-    { studentId: "2022-10003", firstName: "Ana", lastName: "Garcia", course: "BS Information Technology", year: 2, bottles: 156, points: 1560, email: "ana@student.edu" },
-    { studentId: "2022-10004", firstName: "Carlos", lastName: "Mendoza", course: "BS Computer Engineering", year: 2, bottles: 134, points: 1340, email: "carlos@student.edu" },
-    { studentId: "2023-10005", firstName: "Sofia", lastName: "Reyes", course: "BS Computer Science", year: 1, bottles: 89, points: 890, email: "sofia@student.edu" },
-    { studentId: "2023-10006", firstName: "Miguel", lastName: "Torres", course: "BS Information Technology", year: 1, bottles: 67, points: 670, email: "miguel@student.edu" },
-    { studentId: "2021-10007", firstName: "Isabella", lastName: "Cruz", course: "BS Environmental Science", year: 3, bottles: 112, points: 1120, email: "isabella@student.edu" },
-    { studentId: "2022-10008", firstName: "Daniel", lastName: "Lim", course: "BS Computer Science", year: 2, bottles: 78, points: 780, email: "daniel@student.edu" },
+    { studentId: "21-CCS1-0001", firstName: "Maria", lastName: "Santos", course: "BS Computer Science", year: 3, bottles: 245, points: 2450, email: "maria@student.edu" },
+    { studentId: "21-BSES-0002", firstName: "James", lastName: "Rivera", course: "BS Environmental Science", year: 4, bottles: 198, points: 1980, email: "james@student.edu" },
+    { studentId: "22-BSIT-0003", firstName: "Ana", lastName: "Garcia", course: "BS Information Technology", year: 2, bottles: 156, points: 1560, email: "ana@student.edu" },
+    { studentId: "22-BSCPE-0004", firstName: "Carlos", lastName: "Mendoza", course: "BS Computer Engineering", year: 2, bottles: 134, points: 1340, email: "carlos@student.edu" },
+    { studentId: "23-CCS1-0005", firstName: "Sofia", lastName: "Reyes", course: "BS Computer Science", year: 1, bottles: 89, points: 890, email: "sofia@student.edu" },
+    { studentId: "23-BSIT-0006", firstName: "Miguel", lastName: "Torres", course: "BS Information Technology", year: 1, bottles: 67, points: 670, email: "miguel@student.edu" },
+    { studentId: "21-BSES-0007", firstName: "Isabella", lastName: "Cruz", course: "BS Environmental Science", year: 3, bottles: 112, points: 1120, email: "isabella@student.edu" },
+    { studentId: "22-CCS1-0008", firstName: "Daniel", lastName: "Lim", course: "BS Computer Science", year: 2, bottles: 78, points: 780, email: "daniel@student.edu" },
   ];
 
   for (const s of studentData) {
@@ -346,7 +346,7 @@ async function main() {
   console.log("\nDemo Credentials:");
   console.log("  Admin:   admin@filamer.edu / admin123");
   console.log("  Staff:   staff@filamer.edu / staff123");
-  console.log("  Student: 2021-10001 / student123");
+  console.log("  Student: 21-CCS1-0001 / student123");
 
   // Default n8n webhook (local dev — update URL in Admin → Webhooks if n8n runs elsewhere)
   await prisma.$executeRawUnsafe(`DELETE FROM WebhookEndpoint WHERE channel != 'EMAIL' OR channel IS NULL`);

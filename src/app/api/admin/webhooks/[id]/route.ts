@@ -7,12 +7,19 @@ import { webhookUpdateSchema } from "@/validators/webhook.validators";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
+function parseWebhookId(id: string): number | null {
+  const webhookId = Number(id);
+  return Number.isSafeInteger(webhookId) && webhookId > 0 ? webhookId : null;
+}
+
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const { error } = await requireAuth([RoleName.ADMINISTRATOR]);
   if (error) return error;
 
   const { id } = await params;
-  const webhook = await webhookRepository.findById(id);
+  const webhookId = parseWebhookId(id);
+  if (webhookId === null) return apiError("Webhook not found", 404);
+  const webhook = await webhookRepository.findById(webhookId);
   if (!webhook) return apiError("Webhook not found", 404);
 
   return apiResponse(webhook);
@@ -26,11 +33,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const webhookId = parseWebhookId(id);
+  if (webhookId === null) return apiError("Webhook not found", 404);
   const body = await parseBody(request);
   const parsed = webhookUpdateSchema.safeParse(body);
   if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
-  const webhook = await webhookRepository.update(id, parsed.data);
+  const webhook = await webhookRepository.update(webhookId, parsed.data);
   if (!webhook) return apiError("Webhook not found", 404);
 
   return apiResponse(webhook);
@@ -41,9 +50,11 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const webhookId = parseWebhookId(id);
+  if (webhookId === null) return apiError("Webhook not found", 404);
 
   try {
-    await webhookRepository.delete(id);
+    await webhookRepository.delete(webhookId);
     return apiResponse({ deleted: true });
   } catch {
     return apiError("Webhook not found", 404);

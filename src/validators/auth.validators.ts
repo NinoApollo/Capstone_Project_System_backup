@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { OTP_CONFIG } from "@/lib/constants/otp";
-import { STUDENT_ID_PATTERN } from "@/lib/utils/student-id";
+import { STUDENT_ID_MAX_LENGTH, STUDENT_ID_PATTERN } from "@/lib/utils/student-id";
 
 export const studentRegistrationSchema = z
   .object({
     studentId: z
       .string()
       .min(1, "Student ID is required")
-      .regex(STUDENT_ID_PATTERN, "Student ID format: YYYY-XXXXX (e.g. 2021-10001)"),
+      .max(STUDENT_ID_MAX_LENGTH, "Student ID must not exceed 13 characters")
+      .regex(STUDENT_ID_PATTERN, "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)"),
     fullName: z.string().min(2, "Full name is required").max(100),
     course: z.string().min(1, "Course is required"),
     year: z.coerce.number().min(1).max(6),

@@ -136,7 +136,7 @@ export class StudentAuthService {
   }
 
   async requestActionOtp(
-    studentDbId: string,
+    studentDbId: number,
     purpose: "REWARD_REDEMPTION" | "RESET_PASSWORD" | "NEW_DEVICE"
   ) {
     const student = await this.studentRepo.findById(studentDbId);
@@ -165,7 +165,7 @@ export class StudentAuthService {
   }
 
   async hasActionVerification(
-    studentDbId: string,
+    studentDbId: number,
     purpose: "REWARD_REDEMPTION" | "RESET_PASSWORD" | "NEW_DEVICE"
   ) {
     return otpService.hasVerifiedAction(studentDbId, purpose);

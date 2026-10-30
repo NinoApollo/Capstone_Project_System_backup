@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   const student = await prisma.student.findFirst({
-    where: { userId: session!.user.id },
+    where: { userId: Number(session!.user.id) },
   });
   if (!student) return apiError("Student not found", 404);
 

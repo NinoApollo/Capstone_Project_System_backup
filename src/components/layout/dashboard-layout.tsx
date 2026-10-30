@@ -113,11 +113,11 @@ export function DashboardLayout({
   const initials = getInitials(parts[0] ?? "U", parts[1] ?? "");
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-background lg:pl-64">
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border/50 bg-card transition-transform duration-300 lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-border/50 bg-card transition-transform duration-300 lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
@@ -125,7 +125,7 @@ export function DashboardLayout({
           <Logo size="sm" />
         </div>
 
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
           {navItems.map((item) => {
             const isActive =
               pathname === item.href ||

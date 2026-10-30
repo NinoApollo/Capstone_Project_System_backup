@@ -20,7 +20,7 @@ const studentSelect = {
 const MAX_GENERATE_ATTEMPTS = 8;
 
 /** Ensure the student has a barcodeId; create one if missing. */
-export async function ensureStudentBarcode(studentDbId: string) {
+export async function ensureStudentBarcode(studentDbId: number) {
   const student = await prisma.student.findUnique({
     where: { id: studentDbId },
     select: {
@@ -92,7 +92,7 @@ export async function findStudentByBarcode(rawCode: string) {
 }
 
 /** Issue a new barcode (invalidates the previous sticker). */
-export async function regenerateStudentBarcode(studentDbId: string) {
+export async function regenerateStudentBarcode(studentDbId: number) {
   for (let attempt = 0; attempt < MAX_GENERATE_ATTEMPTS; attempt++) {
     const barcodeId = generateBarcodeId();
     try {

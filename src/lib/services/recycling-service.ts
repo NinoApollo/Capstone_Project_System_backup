@@ -16,8 +16,8 @@ import {
 } from "@/lib/utils/achievement-period";
 
 export async function processBottleSubmission(
-  studentDbId: string,
-  machineId?: string,
+  studentDbId: number,
+  machineId?: number,
   weightGrams?: number
 ) {
   const weight = weightGrams ?? BOTTLE_WEIGHT_KG * 1000;
@@ -76,7 +76,7 @@ export async function processBottleSubmission(
 }
 
 /** Bottles / points earned from bottle submissions in the current calendar month. */
-export async function getMonthlyRecyclingStats(studentDbId: string) {
+export async function getMonthlyRecyclingStats(studentDbId: number) {
   const monthStart = getMonthStart();
   const agg = await prisma.transaction.aggregate({
     where: {
@@ -88,13 +88,13 @@ export async function getMonthlyRecyclingStats(studentDbId: string) {
   });
 
   return {
-    bottles: agg._sum.bottleCount ?? 0,
-    points: agg._sum.pointsEarned ?? 0,
+    bottles: agg._sum?.bottleCount ?? 0,
+    points: agg._sum?.pointsEarned ?? 0,
     periodKey: getCurrentPeriodKey(),
   };
 }
 
-export async function checkAndUnlockAchievements(studentDbId: string) {
+export async function checkAndUnlockAchievements(studentDbId: number) {
   const student = await prisma.student.findUnique({
     where: { id: studentDbId },
     include: {
@@ -215,7 +215,7 @@ export async function notifyAdmins(
 }
 
 export async function logMachineEvent(
-  machineId: string,
+  machineId: number,
   message: string,
   level: LogLevel = LogLevel.INFO,
   metadata?: Prisma.InputJsonValue

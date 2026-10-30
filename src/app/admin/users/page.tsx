@@ -26,10 +26,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn, getInitials } from "@/lib/utils";
+import { formatStudentIdInput, STUDENT_ID_MAX_LENGTH } from "@/lib/utils/student-id";
 import { toast } from "sonner";
 
 interface UserRecord {
-  id: string;
+  id: number;
   email: string | null;
   isActive: boolean;
   createdAt: string;
@@ -413,8 +414,13 @@ export default function UsersPage() {
                     <Label>Student ID</Label>
                     <Input
                       value={studentForm.studentId}
+                      maxLength={STUDENT_ID_MAX_LENGTH}
+                      placeholder="23-CCS1-0156"
                       onChange={(e) =>
-                        setStudentForm({ ...studentForm, studentId: e.target.value })
+                        setStudentForm({
+                          ...studentForm,
+                          studentId: formatStudentIdInput(e.target.value),
+                        })
                       }
                       required
                     />

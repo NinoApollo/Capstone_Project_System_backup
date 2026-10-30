@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           return {
-            id: student.user.id,
+            id: String(student.user.id),
             email: student.user.email,
             role: student.user.role.name,
             studentId: student.studentId,
@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: user.id,
+          id: String(user.id),
           email: user.email,
           role: user.role.name,
           name: user.student

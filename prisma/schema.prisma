@@ -98,32 +98,33 @@ enum WebhookEvent {
 }
 
 model Role {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   name      RoleName @unique
   users     User[]
   createdAt DateTime @default(now())
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            Int            @id @default(autoincrement())
   email         String?        @unique
   password      String
-  roleId        String
+  roleId        Int
   role          Role           @relation(fields: [roleId], references: [id])
   student       Student?
   isActive      Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[]
+  approvedRedemptions RewardRedemption[] @relation("RewardApproval")
 
   @@index([roleId])
 }
 
 model Student {
-  id              String               @id @default(cuid())
-  userId          String               @unique
+  id              Int                  @id @default(autoincrement())
+  userId          Int                  @unique
   user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  studentId       String               @unique
+  studentId       String               @unique @db.VarChar(13)
   firstName       String
   lastName        String
   course          String
@@ -144,8 +145,8 @@ model Student {
 }
 
 model OtpVerification {
-  id          String     @id @default(cuid())
-  studentId   String
+  id          Int        @id @default(autoincrement())
+  studentId   Int
   student     Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
   email       String
   otpHash     String
@@ -162,15 +163,15 @@ model OtpVerification {
 }
 
 model Transaction {
-  id           String            @id @default(cuid())
-  studentId    String
+  id           Int               @id @default(autoincrement())
+  studentId    Int
   student      Student           @relation(fields: [studentId], references: [id])
   type         TransactionType
   bottleCount  Int               @default(1)
   pointsEarned Int               @default(0)
   weightKg     Float?
   status       TransactionStatus @default(COMPLETED)
-  machineId    String?
+  machineId    Int?
   machine      Machine?          @relation(fields: [machineId], references: [id])
   bottle       Bottle?
   metadata     Json?
@@ -181,8 +182,8 @@ model Transaction {
 }
 
 model Bottle {
-  id            String       @id @default(cuid())
-  transactionId String?      @unique
+  id            Int          @id @default(autoincrement())
+  transactionId Int?         @unique
   transaction   Transaction? @relation(fields: [transactionId], references: [id])
   material      String       @default("PET")
   weightGrams   Float
@@ -192,7 +193,7 @@ model Bottle {
 }
 
 model Reward {
-  id          String         @id @default(cuid())
+  id          Int            @id @default(autoincrement())
   name        String
   description String         @db.Text
   category    RewardCategory
@@ -206,14 +207,15 @@ model Reward {
 }
 
 model RewardRedemption {
-  id         String           @id @default(cuid())
-  studentId  String
+  id         Int              @id @default(autoincrement())
+  studentId  Int
   student    Student          @relation(fields: [studentId], references: [id])
-  rewardId   String
+  rewardId   Int
   reward     Reward           @relation(fields: [rewardId], references: [id])
   pointsUsed Int
   status     RedemptionStatus @default(PENDING)
-  approvedBy String?
+  approvedBy Int?
+  approver   User?            @relation("RewardApproval", fields: [approvedBy], references: [id], onDelete: SetNull)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 
@@ -222,7 +224,7 @@ model RewardRedemption {
 }
 
 model Machine {
-  id              String        @id @default(cuid())
+  id              Int           @id @default(autoincrement())
   name            String
   location        String
   status          MachineStatus @default(ONLINE)
@@ -239,8 +241,8 @@ model Machine {
 }
 
 model MachineLog {
-  id        String   @id @default(cuid())
-  machineId String
+  id        Int      @id @default(autoincrement())
+  machineId Int
   machine   Machine  @relation(fields: [machineId], references: [id])
   level     LogLevel @default(INFO)
   message   String   @db.Text
@@ -252,7 +254,7 @@ model MachineLog {
 }
 
 model Achievement {
-  id                  String               @id @default(cuid())
+  id                  Int                  @id @default(autoincrement())
   name                String               @unique
   description         String
   icon                String
@@ -265,10 +267,10 @@ model Achievement {
 }
 
 model StudentAchievement {
-  id            String      @id @default(cuid())
-  studentId     String
+  id            Int         @id @default(autoincrement())
+  studentId     Int
   student       Student     @relation(fields: [studentId], references: [id])
-  achievementId String
+  achievementId Int
   achievement   Achievement @relation(fields: [achievementId], references: [id])
   /// "lifetime" for permanent unlocks, or "YYYY-MM" for monthly challenges
   periodKey     String      @default("lifetime")
@@ -279,8 +281,8 @@ model StudentAchievement {
 }
 
 model Notification {
-  id        String           @id @default(cuid())
-  userId    String
+  id        Int              @id @default(autoincrement())
+  userId    Int
   user      User             @relation(fields: [userId], references: [id])
   title     String
   message   String           @db.Text
@@ -294,13 +296,13 @@ model Notification {
 }
 
 model Settings {
-  id    String @id @default(cuid())
+  id    Int    @id @default(autoincrement())
   key   String @unique
   value String @db.Text
 }
 
 model WebhookEndpoint {
-  id              String         @id @default(cuid())
+  id              Int            @id @default(autoincrement())
   name            String
   channel         WebhookChannel
   url             String         @db.Text
@@ -319,8 +321,8 @@ model WebhookEndpoint {
 }
 
 model WebhookLog {
-  id         String          @id @default(cuid())
-  webhookId  String
+  id         Int             @id @default(autoincrement())
+  webhookId  Int
   webhook    WebhookEndpoint @relation(fields: [webhookId], references: [id], onDelete: Cascade)
   event      WebhookEvent
   status     String

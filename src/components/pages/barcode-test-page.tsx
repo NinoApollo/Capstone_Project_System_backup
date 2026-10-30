@@ -157,7 +157,7 @@ export default function BarcodeTestPage({
         <p className="text-muted-foreground">
           Scan or type a FilCycle barcode to verify it matches a registered
           student in the database. You can also type a{" "}
-          <strong>Student ID</strong> (e.g. 2021-10001) for testing.
+          <strong>Student ID</strong> (e.g. 23-CCS1-0156) for testing.
         </p>
         {studentOnly && (
           <p className="mt-2 rounded-lg border border-border/50 bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
@@ -250,7 +250,7 @@ export default function BarcodeTestPage({
           <p className="text-xs text-muted-foreground">
             Accepted: FilCycle barcode (
             <code className="font-mono">FC</code> + 10 chars) or Student ID (
-            <code className="font-mono">2021-10001</code>)
+            <code className="font-mono">23-CCS1-0156</code>)
           </p>
         </CardContent>
       </Card>

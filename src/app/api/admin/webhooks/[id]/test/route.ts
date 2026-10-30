@@ -7,6 +7,11 @@ import { webhookTestSchema } from "@/validators/webhook.validators";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
+function parseWebhookId(id: string): number | null {
+  const webhookId = Number(id);
+  return Number.isSafeInteger(webhookId) && webhookId > 0 ? webhookId : null;
+}
+
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const limited = rateLimit(request);
   if (limited) return limited;
@@ -15,12 +20,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const webhookId = parseWebhookId(id);
+  if (webhookId === null) return apiError("Webhook not found", 404);
   const body = await parseBody(request);
   const parsed = webhookTestSchema.safeParse(body ?? {});
   if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
   try {
-    const result = await webhookDispatcher.testWebhook(id, {
+    const result = await webhookDispatcher.testWebhook(webhookId, {
       email: parsed.data.email || undefined,
       message: parsed.data.message,
     });

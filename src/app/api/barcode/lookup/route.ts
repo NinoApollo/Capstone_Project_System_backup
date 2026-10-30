@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   // While recycling is behind student web login, only allow your own sticker.
   if (session!.user.role === RoleName.STUDENT) {
     const me = await prisma.student.findFirst({
-      where: { userId: session!.user.id },
+      where: { userId: Number(session!.user.id) },
       select: { id: true },
     });
     if (!me || me.id !== student.id) {

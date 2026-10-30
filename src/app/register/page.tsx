@@ -115,14 +115,14 @@ export default function RegisterPage() {
                   </Label>
                   <Input
                     id="studentId"
-                    placeholder="e.g. 2024-10001"
+                    placeholder="e.g. 23-CCS1-0156"
                     value={form.studentId}
                     onChange={(e) => update("studentId", formatStudentIdInput(e.target.value))}
                     className="border-white/10 bg-white/5 text-white placeholder:text-slate-500"
-                    inputMode="numeric"
+                    inputMode="text"
                     maxLength={STUDENT_ID_MAX_LENGTH}
-                    pattern="[0-9]{4}-[0-9]{5}"
-                    title="Format: 2021-10001"
+                    pattern="[0-9]{2}-[A-Za-z0-9]{1,5}-[0-9]{4}"
+                    title="Format: 23-CCS1-0156 (max 13 characters)"
                     required
                   />
                 </div>

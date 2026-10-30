@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
   const student = await prisma.student.findFirst({
-    where: { userId: session!.user.id },
+    where: { userId: Number(session!.user.id) },
   });
 
   if (!student) return apiError("Student profile not found", 404);

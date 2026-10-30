@@ -13,7 +13,7 @@ export class WebhookRepository {
     });
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     return prisma.webhookEndpoint.findUnique({
       where: { id },
       include: {
@@ -55,7 +55,7 @@ export class WebhookRepository {
     });
   }
 
-  async update(id: string, data: WebhookUpdateInput) {
+  async update(id: number, data: WebhookUpdateInput) {
     const existing = await prisma.webhookEndpoint.findUnique({ where: { id } });
     if (!existing) return null;
 
@@ -80,11 +80,11 @@ export class WebhookRepository {
     });
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     return prisma.webhookEndpoint.delete({ where: { id } });
   }
 
-  async updateLastRun(id: string, status: string) {
+  async updateLastRun(id: number, status: string) {
     return prisma.webhookEndpoint.update({
       where: { id },
       data: { lastTriggeredAt: new Date(), lastStatus: status },
@@ -92,7 +92,7 @@ export class WebhookRepository {
   }
 
   async createLog(data: {
-    webhookId: string;
+    webhookId: number;
     event: WebhookEvent;
     status: string;
     statusCode?: number;
@@ -111,7 +111,7 @@ export class WebhookRepository {
     });
   }
 
-  private async clearPrimary(channel: WebhookChannel, exceptId?: string) {
+  private async clearPrimary(channel: WebhookChannel, exceptId?: number) {
     await prisma.webhookEndpoint.updateMany({
       where: {
         channel,

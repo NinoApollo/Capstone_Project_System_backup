@@ -8,6 +8,11 @@ import bcrypt from "bcryptjs";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
+function parseUserId(id: string): number | null {
+  const userId = Number(id);
+  return Number.isSafeInteger(userId) && userId > 0 ? userId : null;
+}
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const limited = rateLimit(request);
   if (limited) return limited;
@@ -16,9 +21,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const userId = parseUserId(id);
+  if (userId === null) return apiError("User not found", 404);
 
   const user = await prisma.user.findUnique({
-    where: { id },
+    where: { id: userId },
     include: {
       role: { select: { name: true } },
       student: true,
@@ -37,10 +44,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const userId = parseUserId(id);
+  if (userId === null) return apiError("User not found", 404);
   const body = await parseBody(request);
 
   const existing = await prisma.user.findUnique({
-    where: { id },
+    where: { id: userId },
     include: { role: true, student: true },
   });
 
@@ -83,7 +92,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const user = await prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data: {
         ...userUpdate,
         ...(Object.keys(studentUpdate).length > 0 && existing.student
@@ -129,12 +138,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     updateData.roleId = role.id;
   }
 
-  if (id === session!.user.id && data.isActive === false) {
+  if (userId === Number(session!.user.id) && data.isActive === false) {
     return apiError("You cannot deactivate your own account");
   }
 
   const user = await prisma.user.update({
-    where: { id },
+    where: { id: userId },
     data: updateData,
     include: { role: true, student: true },
   });
@@ -150,13 +159,15 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   if (error) return error;
 
   const { id } = await params;
+  const userId = parseUserId(id);
+  if (userId === null) return apiError("User not found", 404);
 
-  if (id === session!.user.id) {
+  if (userId === Number(session!.user.id)) {
     return apiError("You cannot delete your own account");
   }
 
   const existing = await prisma.user.findUnique({
-    where: { id },
+    where: { id: userId },
     include: { role: true },
   });
 
@@ -171,7 +182,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
   }
 
-  await prisma.user.delete({ where: { id } });
+  await prisma.user.delete({ where: { id: userId } });
 
   return apiResponse({ deleted: true });
 }

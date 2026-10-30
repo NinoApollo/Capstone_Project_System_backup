@@ -8,6 +8,12 @@ import { hardware } from "@/lib/hardware";
 import { logMachineEvent, notifyAdmins } from "@/lib/services/recycling-service";
 import { LogLevel, NotificationType } from "@prisma/client";
 
+function parseMachineId(id: string | null): number | null {
+  if (!id) return null;
+  const machineId = Number(id);
+  return Number.isSafeInteger(machineId) && machineId > 0 ? machineId : null;
+}
+
 export async function GET(request: NextRequest) {
   const limited = rateLimit(request);
   if (limited) return limited;
@@ -42,8 +48,8 @@ export async function PUT(request: NextRequest) {
   if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
   const { searchParams } = new URL(request.url);
-  const machineId = searchParams.get("id");
-  if (!machineId) return apiError("Machine ID required");
+  const machineId = parseMachineId(searchParams.get("id"));
+  if (machineId === null) return apiError("Valid machine ID required");
 
   const machine = await prisma.machine.update({
     where: { id: machineId },
@@ -72,8 +78,8 @@ export async function POST(request: NextRequest) {
   if (error) return error;
 
   const { searchParams } = new URL(request.url);
-  const machineId = searchParams.get("id");
-  if (!machineId) return apiError("Machine ID required");
+  const machineId = parseMachineId(searchParams.get("id"));
+  if (machineId === null) return apiError("Valid machine ID required");
 
   const hwStatus = await hardware.machineController.getStatus();
   const storagePercent =

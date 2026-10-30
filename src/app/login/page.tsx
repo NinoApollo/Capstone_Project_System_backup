@@ -24,7 +24,7 @@ const loginConfig: Record<
 > = {
   student: {
     label: "Student ID",
-    placeholder: "e.g. 2021-10001",
+    placeholder: "e.g. 23-CCS1-0156",
     inputType: "text",
     inputId: "identifier",
   },
@@ -60,7 +60,7 @@ export default function LoginPage() {
       return;
     }
     if (loginType === "student" && !isCompleteStudentId(identifier)) {
-      toast.error("Enter a valid Student ID (e.g. 2021-10001)");
+      toast.error("Enter a valid Student ID (e.g. 23-CCS1-0156)");
       return;
     }
     if (!password) {
@@ -195,10 +195,10 @@ export default function LoginPage() {
                     )
                   }
                   autoComplete={loginType === "student" ? "username" : "email"}
-                  inputMode={loginType === "student" ? "numeric" : undefined}
+                  inputMode={loginType === "student" ? "text" : undefined}
                   maxLength={loginType === "student" ? STUDENT_ID_MAX_LENGTH : undefined}
-                  pattern={loginType === "student" ? "[0-9]{4}-[0-9]{5}" : undefined}
-                  title={loginType === "student" ? "Format: 2021-10001" : undefined}
+                  pattern={loginType === "student" ? "([0-9]{2}-[A-Za-z0-9]{1,5}-[0-9]{4}|[0-9]{4}-[0-9]{5})" : undefined}
+                  title={loginType === "student" ? "Format: 23-CCS1-0156" : undefined}
                 />
               </div>
 
@@ -237,7 +237,7 @@ export default function LoginPage() {
 
             <div className="mt-6 rounded-xl bg-primary/5 p-4 text-center text-xs text-muted-foreground">
               <p className="font-medium text-primary mb-1">Demo Credentials</p>
-              <p>Student: 2021-10001 / student123</p>
+              <p>Student: 21-CCS1-0001 / student123</p>
               <p>Staff: staff@filamer.edu / staff123</p>
               <p>Admin: admin@filamer.edu / admin123</p>
             </div>

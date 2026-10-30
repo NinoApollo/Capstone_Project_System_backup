@@ -1,6 +1,6 @@
 /**
  * Soft reset: removes user-generated data but keeps pre-built demo accounts.
- * Demo accounts: admin, staff, and seed students (2021-10001, etc.)
+ * Demo accounts: admin, staff, and seed students (21-CCS1-0001, etc.)
  */
 import { PrismaClient } from "@prisma/client";
 
@@ -9,14 +9,14 @@ const prisma = new PrismaClient();
 const DEMO_ADMIN_EMAIL = "admin@filamer.edu";
 const DEMO_STAFF_EMAIL = "staff@filamer.edu";
 const DEMO_STUDENT_IDS = [
-  "2021-10001",
-  "2021-10002",
-  "2022-10003",
-  "2022-10004",
-  "2023-10005",
-  "2023-10006",
-  "2021-10007",
-  "2022-10008",
+  "21-CCS1-0001",
+  "21-BSES-0002",
+  "22-BSIT-0003",
+  "22-BSCPE-0004",
+  "23-CCS1-0005",
+  "23-BSIT-0006",
+  "21-BSES-0007",
+  "22-CCS1-0008",
 ];
 
 async function main() {
@@ -70,7 +70,7 @@ async function main() {
   console.log("\n✅ Reset complete — pre-built accounts preserved:");
   console.log("  Admin:   admin@filamer.edu / admin123");
   console.log("  Staff:   staff@filamer.edu / staff123");
-  console.log("  Student: 2021-10001 / student123");
+  console.log("  Student: 21-CCS1-0001 / student123");
 }
 
 main()

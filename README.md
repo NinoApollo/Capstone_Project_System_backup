@@ -74,9 +74,16 @@ CREATE DATABASE filcycle CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ### 4. Run migrations and seed
 
+For a fresh database, run setup:
+
 ```bash
 npm run db:setup
 ```
+
+The integer-key schema is not compatible with databases created using the old
+string IDs. For a development database, back it up and run `npm run db:reset`
+to rebuild and reseed it. This command permanently deletes the existing data;
+do not use it on a database that must be preserved.
 
 ### 5. Start development server
 
@@ -92,7 +99,7 @@ Open [http://localhost:3000](http://localhost:3000)
 |------|-------|----------|
 | Administrator | admin@filamer.edu | admin123 |
 | Staff | staff@filamer.edu | staff123 |
-| Student | 2021-10001 | student123 |
+| Student | 21-CCS1-0001 | student123 |
 
 Students login with **Student ID** (not email).
 

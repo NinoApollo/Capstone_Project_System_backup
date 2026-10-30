@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
     if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
     const student = await prisma.student.findFirst({
-      where: { userId: session!.user.id },
+      where: { userId: Number(session!.user.id) },
       include: { user: { select: { email: true } } },
     });
     if (!student) return apiError("Student not found", 404);
@@ -153,12 +153,16 @@ export async function PUT(request: NextRequest) {
 
     const redemptionId = searchParams.get("id");
     if (!redemptionId) return apiError("Redemption ID required");
+    const redemptionDbId = Number(redemptionId);
+    if (!Number.isSafeInteger(redemptionDbId) || redemptionDbId <= 0) {
+      return apiError("Valid redemption ID required");
+    }
 
     const redemption = await prisma.rewardRedemption.update({
-      where: { id: redemptionId },
+      where: { id: redemptionDbId },
       data: {
         status: parsed.data.status,
-        approvedBy: staffSession!.user.email ?? staffSession!.user.id,
+        approvedBy: Number(staffSession!.user.id),
       },
       include: { reward: true, student: true },
     });

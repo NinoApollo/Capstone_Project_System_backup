@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   if (error) return error;
 
   const student = await prisma.student.findFirst({
-    where: { userId: session!.user.id },
+    where: { userId: Number(session!.user.id) },
     select: {
       id: true,
       bottlesRecycled: true,

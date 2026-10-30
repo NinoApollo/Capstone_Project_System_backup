@@ -3,7 +3,7 @@ import { OtpPurpose } from "@prisma/client";
 import type { OtpPurposeType } from "@/lib/constants/otp";
 
 export class OtpRepository {
-  async invalidatePending(studentId: string, purpose: OtpPurpose) {
+  async invalidatePending(studentId: number, purpose: OtpPurpose) {
     await prisma.otpVerification.updateMany({
       where: { studentId, purpose, verified: false },
       data: { verified: true },
@@ -11,7 +11,7 @@ export class OtpRepository {
   }
 
   async create(data: {
-    studentId: string;
+    studentId: number;
     email: string;
     otpHash: string;
     purpose: OtpPurpose;
@@ -20,7 +20,7 @@ export class OtpRepository {
     return prisma.otpVerification.create({ data });
   }
 
-  async findLatestValid(studentId: string, purpose: OtpPurpose) {
+  async findLatestValid(studentId: number, purpose: OtpPurpose) {
     return prisma.otpVerification.findFirst({
       where: {
         studentId,
@@ -33,7 +33,7 @@ export class OtpRepository {
   }
 
   async findLatestVerifiedAction(
-    studentId: string,
+    studentId: number,
     purpose: OtpPurpose,
     withinMinutes: number
   ) {
@@ -49,28 +49,28 @@ export class OtpRepository {
     });
   }
 
-  async incrementAttempts(id: string) {
+  async incrementAttempts(id: number) {
     return prisma.otpVerification.update({
       where: { id },
       data: { attempts: { increment: 1 } },
     });
   }
 
-  async markVerified(id: string) {
+  async markVerified(id: number) {
     return prisma.otpVerification.update({
       where: { id },
       data: { verified: true },
     });
   }
 
-  async countRecentRequests(studentId: string, windowMinutes: number) {
+  async countRecentRequests(studentId: number, windowMinutes: number) {
     const since = new Date(Date.now() - windowMinutes * 60 * 1000);
     return prisma.otpVerification.count({
       where: { studentId, createdAt: { gte: since } },
     });
   }
 
-  async getLastCreatedAt(studentId: string, purpose: OtpPurpose) {
+  async getLastCreatedAt(studentId: number, purpose: OtpPurpose) {
     const record = await prisma.otpVerification.findFirst({
       where: { studentId, purpose },
       orderBy: { createdAt: "desc" },
@@ -107,7 +107,7 @@ export class StudentRepository {
     });
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     return prisma.student.findUnique({
       where: { id },
       include: { user: { include: { role: true } } },
@@ -122,7 +122,7 @@ export class StudentRepository {
     year: number;
     email: string;
     passwordHash: string;
-    roleId: string;
+    roleId: number;
     barcodeId?: string;
   }) {
     return prisma.$transaction(async (tx) => {
@@ -150,7 +150,7 @@ export class StudentRepository {
     });
   }
 
-  async activateEmailVerification(studentId: string) {
+  async activateEmailVerification(studentId: number) {
     return prisma.$transaction(async (tx) => {
       const student = await tx.student.update({
         where: { id: studentId },

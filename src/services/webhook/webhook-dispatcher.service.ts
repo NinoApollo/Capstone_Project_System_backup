@@ -4,7 +4,7 @@ import { analyzeN8nResponse } from "@/lib/utils/n8n-webhook";
 import { webhookRepository } from "@/repositories/webhook.repository";
 
 export interface DispatchResult {
-  webhookId: string;
+  webhookId: number | "";
   name: string;
   success: boolean;
   statusCode?: number;
@@ -75,7 +75,7 @@ export class WebhookDispatcherService {
 
   /** Send to a single webhook by ID (test button) */
   async testWebhook(
-    webhookId: string,
+    webhookId: number,
     overrides?: Record<string, unknown>
   ): Promise<DispatchResult> {
     const webhook = await this.repo.findById(webhookId);
@@ -169,7 +169,7 @@ export class WebhookDispatcherService {
   }
 
   private async sendToWebhook(
-    webhookId: string,
+    webhookId: number,
     url: string,
     secret: string | null,
     channel: WebhookChannel,
