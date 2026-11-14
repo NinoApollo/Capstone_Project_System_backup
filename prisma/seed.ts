@@ -61,18 +61,92 @@ async function main() {
 
   // Students
   const studentData = [
-    { studentId: "21-CCS1-0001", firstName: "Maria", lastName: "Santos", course: "BS Computer Science", year: 3, bottles: 245, points: 2450, email: "maria@student.edu" },
-    { studentId: "21-BSES-0002", firstName: "James", lastName: "Rivera", course: "BS Environmental Science", year: 4, bottles: 198, points: 1980, email: "james@student.edu" },
-    { studentId: "22-BSIT-0003", firstName: "Ana", lastName: "Garcia", course: "BS Information Technology", year: 2, bottles: 156, points: 1560, email: "ana@student.edu" },
-    { studentId: "22-BSCPE-0004", firstName: "Carlos", lastName: "Mendoza", course: "BS Computer Engineering", year: 2, bottles: 134, points: 1340, email: "carlos@student.edu" },
-    { studentId: "23-CCS1-0005", firstName: "Sofia", lastName: "Reyes", course: "BS Computer Science", year: 1, bottles: 89, points: 890, email: "sofia@student.edu" },
-    { studentId: "23-BSIT-0006", firstName: "Miguel", lastName: "Torres", course: "BS Information Technology", year: 1, bottles: 67, points: 670, email: "miguel@student.edu" },
-    { studentId: "21-BSES-0007", firstName: "Isabella", lastName: "Cruz", course: "BS Environmental Science", year: 3, bottles: 112, points: 1120, email: "isabella@student.edu" },
-    { studentId: "22-CCS1-0008", firstName: "Daniel", lastName: "Lim", course: "BS Computer Science", year: 2, bottles: 78, points: 780, email: "daniel@student.edu" },
+    {
+      studentId: "21-CCS1-0001",
+      firstName: "Maria",
+      lastName: "Santos",
+      course: "BS Computer Science",
+      year: 3,
+      bottles: 245,
+      points: 2450,
+      email: "maria@student.edu",
+    },
+    {
+      studentId: "21-BSES-0002",
+      firstName: "James",
+      lastName: "Rivera",
+      course: "BS Environmental Science",
+      year: 4,
+      bottles: 198,
+      points: 1980,
+      email: "james@student.edu",
+    },
+    {
+      studentId: "22-BSIT-0003",
+      firstName: "Ana",
+      lastName: "Garcia",
+      course: "BS Information Technology",
+      year: 2,
+      bottles: 156,
+      points: 1560,
+      email: "ana@student.edu",
+    },
+    {
+      studentId: "22-BSCPE-0004",
+      firstName: "Carlos",
+      lastName: "Mendoza",
+      course: "BS Computer Engineering",
+      year: 2,
+      bottles: 134,
+      points: 1340,
+      email: "carlos@student.edu",
+    },
+    {
+      studentId: "23-CCS1-0005",
+      firstName: "Sofia",
+      lastName: "Reyes",
+      course: "BS Computer Science",
+      year: 1,
+      bottles: 89,
+      points: 890,
+      email: "sofia@student.edu",
+    },
+    {
+      studentId: "23-BSIT-0006",
+      firstName: "Miguel",
+      lastName: "Torres",
+      course: "BS Information Technology",
+      year: 1,
+      bottles: 67,
+      points: 670,
+      email: "miguel@student.edu",
+    },
+    {
+      studentId: "21-BSES-0007",
+      firstName: "Isabella",
+      lastName: "Cruz",
+      course: "BS Environmental Science",
+      year: 3,
+      bottles: 112,
+      points: 1120,
+      email: "isabella@student.edu",
+    },
+    {
+      studentId: "22-CCS1-0008",
+      firstName: "Daniel",
+      lastName: "Lim",
+      course: "BS Computer Science",
+      year: 2,
+      bottles: 78,
+      points: 780,
+      email: "daniel@student.edu",
+    },
   ];
 
   for (const s of studentData) {
-    const existing = await prisma.student.findUnique({ where: { studentId: s.studentId } });
+    const existing = await prisma.student.findUnique({
+      where: { studentId: s.studentId },
+    });
     if (!existing) {
       await prisma.student.create({
         data: {
@@ -232,14 +306,27 @@ async function main() {
 
   // Rewards
   const rewards = [
-    { name: "Coffee Voucher", description: "Free coffee at campus café", category: RewardCategory.COFFEE_VOUCHER, pointsCost: 50, stock: 100 },
-    { name: "University Hoodie", description: "Official university merchandise hoodie", category: RewardCategory.MERCHANDISE, pointsCost: 500, stock: 25 },
-    { name: "Campus T-Shirt", description: "FilCycle branded t-shirt", category: RewardCategory.MERCHANDISE, pointsCost: 300, stock: 50 },
-    { name: "₱100 Cash Reward", description: "Cash reward credited to student account", category: RewardCategory.CASH, pointsCost: 200, stock: 30 },
-    { name: "University Credit Points", description: "50 university credit points", category: RewardCategory.UNIVERSITY_POINTS, pointsCost: 150, stock: 75 },
-    { name: "₱500 Gift Card", description: "Gift card for partner stores", category: RewardCategory.GIFT_CARD, pointsCost: 800, stock: 15 },
-    { name: "Notebook Set", description: "Eco-friendly notebook and pen set", category: RewardCategory.MERCHANDISE, pointsCost: 100, stock: 60 },
-    { name: "Premium Coffee Pass", description: "Weekly unlimited coffee pass", category: RewardCategory.COFFEE_VOUCHER, pointsCost: 250, stock: 20 },
+    {
+      name: "₱10 G-Cash",
+      description: "G-Cash reward",
+      category: RewardCategory.G_CASH,
+      pointsCost: 50,
+      stock: 100,
+    },
+    {
+      name: "₱50 Mobile Load",
+      description: "Mobile phone load reward",
+      category: RewardCategory.LOAD,
+      pointsCost: 150,
+      stock: 100,
+    },
+    {
+      name: "₱100 Mobile Load",
+      description: "Mobile phone load reward",
+      category: RewardCategory.LOAD,
+      pointsCost: 300,
+      stock: 50,
+    },
   ];
 
   for (const r of rewards) {
@@ -251,14 +338,44 @@ async function main() {
 
   // Machines
   const machines = [
-    { name: "FilCycle Unit A", location: "FCU Main Library Entrance", status: MachineStatus.ONLINE, bottlesStored: 127, bottleCapacity: 500, temperature: 24.5 },
-    { name: "FilCycle Unit B", location: "FCU Engineering Building", status: MachineStatus.ONLINE, bottlesStored: 89, bottleCapacity: 500, temperature: 25.1 },
-    { name: "FilCycle Unit C", location: "FCU Student Center", status: MachineStatus.ONLINE, bottlesStored: 203, bottleCapacity: 500, temperature: 23.8 },
-    { name: "FilCycle Unit D", location: "FCU Science Building", status: MachineStatus.MAINTENANCE, bottlesStored: 45, bottleCapacity: 500, temperature: 26.0 },
+    {
+      name: "FilCycle Unit A",
+      location: "FCU Main Library Entrance",
+      status: MachineStatus.ONLINE,
+      bottlesStored: 127,
+      bottleCapacity: 500,
+      temperature: 24.5,
+    },
+    {
+      name: "FilCycle Unit B",
+      location: "FCU Engineering Building",
+      status: MachineStatus.ONLINE,
+      bottlesStored: 89,
+      bottleCapacity: 500,
+      temperature: 25.1,
+    },
+    {
+      name: "FilCycle Unit C",
+      location: "FCU Student Center",
+      status: MachineStatus.ONLINE,
+      bottlesStored: 203,
+      bottleCapacity: 500,
+      temperature: 23.8,
+    },
+    {
+      name: "FilCycle Unit D",
+      location: "FCU Science Building",
+      status: MachineStatus.MAINTENANCE,
+      bottlesStored: 45,
+      bottleCapacity: 500,
+      temperature: 26.0,
+    },
   ];
 
   for (const m of machines) {
-    const existing = await prisma.machine.findFirst({ where: { name: m.name } });
+    const existing = await prisma.machine.findFirst({
+      where: { name: m.name },
+    });
     if (!existing) {
       const machine = await prisma.machine.create({
         data: {
@@ -269,9 +386,21 @@ async function main() {
 
       await prisma.machineLog.createMany({
         data: [
-          { machineId: machine.id, level: LogLevel.INFO, message: "Machine initialized and online" },
-          { machineId: machine.id, level: LogLevel.INFO, message: "Daily maintenance check completed" },
-          { machineId: machine.id, level: LogLevel.INFO, message: "Storage level at 25% capacity" },
+          {
+            machineId: machine.id,
+            level: LogLevel.INFO,
+            message: "Machine initialized and online",
+          },
+          {
+            machineId: machine.id,
+            level: LogLevel.INFO,
+            message: "Daily maintenance check completed",
+          },
+          {
+            machineId: machine.id,
+            level: LogLevel.INFO,
+            message: "Storage level at 25% capacity",
+          },
         ],
       });
     }
@@ -334,7 +463,9 @@ async function main() {
   }
 
   // Update ranks
-  const allStudents = await prisma.student.findMany({ orderBy: { bottlesRecycled: "desc" } });
+  const allStudents = await prisma.student.findMany({
+    orderBy: { bottlesRecycled: "desc" },
+  });
   for (let i = 0; i < allStudents.length; i++) {
     await prisma.student.update({
       where: { id: allStudents[i].id },
@@ -349,7 +480,9 @@ async function main() {
   console.log("  Student: 21-CCS1-0001 / student123");
 
   // Default n8n webhook (local dev — update URL in Admin → Webhooks if n8n runs elsewhere)
-  await prisma.$executeRawUnsafe(`DELETE FROM WebhookEndpoint WHERE channel != 'EMAIL' OR channel IS NULL`);
+  await prisma.$executeRawUnsafe(
+    `DELETE FROM WebhookEndpoint WHERE channel != 'EMAIL' OR channel IS NULL`,
+  );
   const existingWebhook = await prisma.webhookEndpoint.findFirst({
     where: { url: "http://localhost:5678/webhook/filcycle" },
   });
@@ -360,12 +493,15 @@ async function main() {
         channel: "EMAIL",
         url: "http://localhost:5678/webhook/filcycle",
         events: ["OTP_SEND", "MANUAL_TEST", "STUDENT_REGISTER"],
-        description: "Local n8n workflow — import n8n/filcycle-email-workflow.json and activate",
+        description:
+          "Local n8n workflow — import n8n/filcycle-email-workflow.json and activate",
         isActive: true,
         isPrimary: true,
       },
     });
-    console.log("\n  n8n webhook: http://localhost:5678/webhook/filcycle (added to Admin → Webhooks)");
+    console.log(
+      "\n  n8n webhook: http://localhost:5678/webhook/filcycle (added to Admin → Webhooks)",
+    );
   }
 }
 

@@ -28,6 +28,11 @@ export function BarcodeScanInput({
   const [value, setValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const submittingRef = useRef(false);
+  const lastKeyAtRef = useRef(0);
+  const rapidKeyCountRef = useRef(0);
+  const scannerBurstRef = useRef(false);
+  const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (autoFocus && !disabled) {
@@ -35,20 +40,31 @@ export function BarcodeScanInput({
     }
   }, [autoFocus, disabled]);
 
+  useEffect(
+    () => () => {
+      if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+    },
+    []
+  );
+
   const submit = useCallback(
     async (raw: string) => {
       const code = raw.trim();
-      if (!code || submitting || disabled) return;
+      if (!code || submittingRef.current || disabled) return;
+      submittingRef.current = true;
       setSubmitting(true);
       try {
         await onScan(code);
         setValue("");
       } finally {
+        submittingRef.current = false;
         setSubmitting(false);
+        scannerBurstRef.current = false;
+        rapidKeyCountRef.current = 0;
         inputRef.current?.focus();
       }
     },
-    [onScan, submitting, disabled]
+    [onScan, disabled]
   );
 
   return (
@@ -56,7 +72,7 @@ export function BarcodeScanInput({
       className={cn("flex gap-2", className)}
       onSubmit={(e) => {
         e.preventDefault();
-        void submit(value);
+        void submit(inputRef.current?.value ?? value);
       }}
     >
       <div className="relative flex-1">
@@ -68,6 +84,36 @@ export function BarcodeScanInput({
           ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.target.value.toUpperCase())}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+              void submit(inputRef.current?.value ?? value);
+              return;
+            }
+
+            if (e.key === "Tab" && scannerBurstRef.current) {
+              e.preventDefault();
+              if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+              void submit(inputRef.current?.value ?? value);
+              return;
+            }
+
+            if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+
+            const now = performance.now();
+            rapidKeyCountRef.current =
+              now - lastKeyAtRef.current < 80 ? rapidKeyCountRef.current + 1 : 1;
+            lastKeyAtRef.current = now;
+
+            if (rapidKeyCountRef.current >= 4) {
+              scannerBurstRef.current = true;
+              if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+              scanTimerRef.current = setTimeout(() => {
+                void submit(inputRef.current?.value ?? "");
+              }, 150);
+            }
+          }}
           disabled={disabled || submitting}
           placeholder={placeholder}
           autoComplete="off"

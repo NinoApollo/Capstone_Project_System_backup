@@ -28,11 +28,8 @@ enum TransactionStatus {
 }
 
 enum RewardCategory {
-  COFFEE_VOUCHER
-  MERCHANDISE
-  CASH
-  UNIVERSITY_POINTS
-  GIFT_CARD
+  G_CASH
+  LOAD
 }
 
 enum RedemptionStatus {

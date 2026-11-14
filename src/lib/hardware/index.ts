@@ -81,44 +81,34 @@ export interface IMachineController {
 
 export class SimulatedBottleValidator implements IBottleValidator {
   async validate(): Promise<BottleDetectionResult> {
-    await this.simulateDelay(800, 1500);
-
-    const isValid = Math.random() > 0.08;
-    const weightGrams = 15 + Math.random() * 20;
-
     return {
-      detected: true,
-      material: isValid ? "PET" : "UNKNOWN",
-      weightGrams: Math.round(weightGrams * 10) / 10,
-      isValid,
-      confidence: isValid ? 0.92 + Math.random() * 0.07 : 0.3 + Math.random() * 0.2,
+      detected: false,
+      material: "UNKNOWN",
+      weightGrams: 0,
+      isValid: false,
+      confidence: 0,
       sensorData: {
-        ir: { timestamp: new Date(), value: 1, unit: "bool", status: "ok" },
+        ir: { timestamp: new Date(), value: 0, unit: "bool", status: "warning" },
         loadCell: {
           timestamp: new Date(),
-          value: weightGrams,
+          value: 0,
           unit: "g",
-          status: "ok",
+          status: "warning",
         },
         ultrasonic: {
           timestamp: new Date(),
-          value: 12 + Math.random() * 5,
           unit: "cm",
-          status: "ok",
+          value: 0,
+          status: "warning",
         },
         material: {
           timestamp: new Date(),
-          value: isValid ? 1 : 0,
+          value: 0,
           unit: "type",
-          status: isValid ? "ok" : "warning",
+          status: "warning",
         },
       },
     };
-  }
-
-  private simulateDelay(min: number, max: number): Promise<void> {
-    const delay = min + Math.random() * (max - min);
-    return new Promise((resolve) => setTimeout(resolve, delay));
   }
 }
 
@@ -174,10 +164,10 @@ export class SimulatedMachineController implements IMachineController {
       storageCapacity: this.storageCapacity,
       temperature: 24 + Math.random() * 4,
       sensors: {
-        ir: "active",
-        loadCell: "active",
-        ultrasonic: "active",
-        material: "active",
+        ir: "inactive",
+        loadCell: "inactive",
+        ultrasonic: "inactive",
+        material: "inactive",
       },
       lastHeartbeat: new Date(),
     };

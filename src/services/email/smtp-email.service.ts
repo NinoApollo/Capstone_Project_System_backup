@@ -1,9 +1,13 @@
 import nodemailer from "nodemailer";
-import type { EmailSendResult, IEmailProvider } from "./email-provider.interface";
+import type { Transporter } from "nodemailer";
+import type {
+  EmailSendResult,
+  IEmailProvider,
+} from "./email-provider.interface";
 
 export class SmtpEmailService implements IEmailProvider {
   readonly name = "SMTP";
-  private transporter: nodemailer.Transporter;
+  private transporter: Transporter;
   private from: string;
 
   constructor(
@@ -12,7 +16,7 @@ export class SmtpEmailService implements IEmailProvider {
     user: string,
     pass: string,
     from: string,
-    secure: boolean
+    secure: boolean,
   ) {
     this.from = from;
     this.transporter = nodemailer.createTransport({
@@ -27,7 +31,7 @@ export class SmtpEmailService implements IEmailProvider {
     to: string,
     subject: string,
     body: string,
-    _studentId: string
+    _studentId: string,
   ): Promise<EmailSendResult> {
     try {
       const info = await this.transporter.sendMail({

@@ -10,11 +10,22 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { AUTH_PENDING_KEY } from "@/lib/constants/auth";
-import { formatStudentIdInput, isCompleteStudentId, normalizeStudentId, STUDENT_ID_MAX_LENGTH } from "@/lib/utils/student-id";
+import {
+  formatStudentIdInput,
+  isCompleteStudentId,
+  normalizeStudentId,
+  STUDENT_ID_MAX_LENGTH,
+} from "@/lib/utils/student-id";
 
 type LoginType = "student" | "admin" | "staff";
 
@@ -84,14 +95,25 @@ export default function LoginPage() {
         const checkData = await checkRes.json();
 
         if (!checkData.success) {
-          toast.error(checkData.error || "Invalid Student ID or Password.");
+          const errorMessage = String(checkData.error ?? "");
+          const isNetworkError =
+            /fetch failed|failed to fetch|network error/i.test(errorMessage);
+
+          toast.error(
+            checkRes.status === 401
+              ? "Invalid username or invalid password"
+              : isNetworkError
+                ? "Could not connect to the verification service. Please try again later."
+                : errorMessage ||
+                  "Unable to validate your login. Please try again.",
+          );
           return;
         }
 
         if (checkData.data.requiresOtp) {
           sessionStorage.setItem(
             AUTH_PENDING_KEY,
-            JSON.stringify({ studentId, password })
+            JSON.stringify({ studentId, password }),
           );
 
           const params = new URLSearchParams({
@@ -99,7 +121,8 @@ export default function LoginPage() {
             purpose: checkData.data.purpose,
             maskedEmail: checkData.data.maskedEmail,
           });
-          if (checkData.data.expiresAt) params.set("expiresAt", checkData.data.expiresAt);
+          if (checkData.data.expiresAt)
+            params.set("expiresAt", checkData.data.expiresAt);
           if (checkData.data.resendAvailableAt) {
             params.set("resendAvailableAt", checkData.data.resendAvailableAt);
           }
@@ -111,14 +134,17 @@ export default function LoginPage() {
       }
 
       const result = await signIn("credentials", {
-        identifier: loginType === "student" ? normalizeStudentId(identifier) : identifier.trim(),
+        identifier:
+          loginType === "student"
+            ? normalizeStudentId(identifier)
+            : identifier.trim(),
         password,
         loginType,
         redirect: false,
       });
 
       if (result?.error) {
-        toast.error(result.error);
+        toast.error("Invalid username or invalid password");
         return;
       }
 
@@ -126,7 +152,9 @@ export default function LoginPage() {
       const role = session?.user?.role;
 
       if (!role) {
-        toast.error("Login succeeded but session could not be loaded. Please try again.");
+        toast.error(
+          "Login succeeded but session could not be loaded. Please try again.",
+        );
         return;
       }
 
@@ -191,14 +219,22 @@ export default function LoginPage() {
                     setIdentifier(
                       loginType === "student"
                         ? formatStudentIdInput(e.target.value)
-                        : e.target.value
+                        : e.target.value,
                     )
                   }
                   autoComplete={loginType === "student" ? "username" : "email"}
                   inputMode={loginType === "student" ? "text" : undefined}
-                  maxLength={loginType === "student" ? STUDENT_ID_MAX_LENGTH : undefined}
-                  pattern={loginType === "student" ? "([0-9]{2}-[A-Za-z0-9]{1,5}-[0-9]{4}|[0-9]{4}-[0-9]{5})" : undefined}
-                  title={loginType === "student" ? "Format: 23-CCS1-0156" : undefined}
+                  maxLength={
+                    loginType === "student" ? STUDENT_ID_MAX_LENGTH : undefined
+                  }
+                  pattern={
+                    loginType === "student"
+                      ? "([0-9]{2}-[A-Za-z0-9]{1,5}-[0-9]{4}|[0-9]{4}-[0-9]{5})"
+                      : undefined
+                  }
+                  title={
+                    loginType === "student" ? "Format: 23-CCS1-0156" : undefined
+                  }
                 />
               </div>
 
@@ -244,7 +280,10 @@ export default function LoginPage() {
 
             <p className="mt-4 text-center text-sm text-muted-foreground">
               New student?{" "}
-              <Link href="/register" className="text-primary hover:underline font-medium">
+              <Link
+                href="/register"
+                className="text-primary hover:underline font-medium"
+              >
                 Create an account
               </Link>
             </p>

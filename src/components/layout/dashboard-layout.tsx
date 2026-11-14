@@ -100,13 +100,32 @@ export function DashboardLayout({
   };
 
   useEffect(() => {
-    fetch("/api/notifications?unread=true")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) setUnreadCount(d.data.unreadCount);
+    let activeRequest: AbortController | null = null;
+
+    const updateUnreadCount = () => {
+      activeRequest?.abort();
+      activeRequest = new AbortController();
+
+      fetch("/api/notifications?countOnly=true", {
+        signal: activeRequest.signal,
       })
-      .catch(() => {});
-  }, [pathname]);
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) setUnreadCount(data.data.unreadCount);
+        })
+        .catch(() => {});
+    };
+
+    updateUnreadCount();
+    window.addEventListener("focus", updateUnreadCount);
+    window.addEventListener("notifications:changed", updateUnreadCount);
+
+    return () => {
+      activeRequest?.abort();
+      window.removeEventListener("focus", updateUnreadCount);
+      window.removeEventListener("notifications:changed", updateUnreadCount);
+    };
+  }, []);
 
   const name = session?.user?.name ?? "User";
   const parts = name.split(" ");
@@ -118,7 +137,7 @@ export function DashboardLayout({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-border/50 bg-card transition-transform duration-300 lg:translate-x-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
         <div className="flex h-16 items-center border-b border-border/50 px-6">
@@ -139,7 +158,7 @@ export function DashboardLayout({
                   "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted/30 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-muted/30 hover:text-foreground",
                 )}
               >
                 <item.icon size={18} />
@@ -207,7 +226,9 @@ export function DashboardLayout({
               </Avatar>
               <div className="hidden sm:block">
                 <p className="text-sm font-medium">{name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{role}</p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  {role}
+                </p>
               </div>
             </div>
           </div>

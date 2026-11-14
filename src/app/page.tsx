@@ -42,8 +42,7 @@ const features = [
   {
     icon: Gift,
     title: "Redeemable Rewards",
-    description:
-      "Exchange points for coffee vouchers, merchandise, gift cards, and university credits.",
+    description: "Exchange points for G-Cash and mobile load rewards.",
   },
   {
     icon: BarChart3,
@@ -66,10 +65,26 @@ const features = [
 ];
 
 const steps = [
-  { step: "01", title: "Register", desc: "Sign up with your university Student ID" },
-  { step: "02", title: "Recycle", desc: "Insert plastic bottles at any FilCycle machine" },
-  { step: "03", title: "Earn", desc: "Collect reward points for every valid bottle" },
-  { step: "04", title: "Redeem", desc: "Claim rewards from our exclusive catalog" },
+  {
+    step: "01",
+    title: "Register",
+    desc: "Sign up with your university Student ID",
+  },
+  {
+    step: "02",
+    title: "Recycle",
+    desc: "Insert plastic bottles at any FilCycle machine",
+  },
+  {
+    step: "03",
+    title: "Earn",
+    desc: "Collect reward points for every valid bottle",
+  },
+  {
+    step: "04",
+    title: "Redeem",
+    desc: "Claim rewards from our exclusive catalog",
+  },
 ];
 
 const faqs = [
@@ -79,7 +94,7 @@ const faqs = [
   },
   {
     q: "What rewards can I redeem?",
-    a: "Our catalog includes coffee vouchers, university merchandise, gift cards, cash rewards, and university credit points.",
+    a: "Our catalog includes G-Cash and mobile load rewards.",
   },
   {
     q: "How does bottle validation work?",
@@ -115,16 +130,28 @@ export default function LandingPage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Logo />
           <div className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#features"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
               Features
             </a>
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#how-it-works"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
               How It Works
             </a>
-            <a href="#faq" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#faq"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
               FAQ
             </a>
-            <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#contact"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
               Contact
             </a>
           </div>
@@ -168,8 +195,9 @@ export default function LandingPage() {
               Protect Tomorrow.
             </h1>
             <p className="mb-8 text-lg text-muted-foreground sm:text-xl">
-              FilCycle transforms plastic bottle recycling into a rewarding experience.
-              Insert bottles, earn points, claim rewards — all while saving the planet.
+              FilCycle transforms plastic bottle recycling into a rewarding
+              experience. Insert bottles, earn points, claim rewards — all while
+              saving the planet.
             </p>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link href="/login">
@@ -193,17 +221,38 @@ export default function LandingPage() {
             className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4"
           >
             {[
-              { label: "Bottles Recycled", value: stats.totalBottles, suffix: "+" },
-              { label: "Active Students", value: stats.totalStudents, suffix: "+" },
-              { label: "Plastic Saved (kg)", value: stats.plasticSavedKg, suffix: "" },
-              { label: "Machines Deployed", value: stats.machinesDeployed, suffix: "" },
+              {
+                label: "Bottles Recycled",
+                value: stats.totalBottles,
+                suffix: "+",
+              },
+              {
+                label: "Active Students",
+                value: stats.totalStudents,
+                suffix: "+",
+              },
+              {
+                label: "Plastic Saved (kg)",
+                value: stats.plasticSavedKg,
+                suffix: "",
+              },
+              {
+                label: "Machines Deployed",
+                value: stats.machinesDeployed,
+                suffix: "",
+              },
             ].map((stat) => (
-              <Card key={stat.label} className="card-hover glass border-primary/10 text-center">
+              <Card
+                key={stat.label}
+                className="card-hover glass border-primary/10 text-center"
+              >
                 <CardContent className="p-6">
                   <div className="text-3xl font-bold text-primary">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {stat.label}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -216,10 +265,12 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <motion.div {...fadeUp} className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
-              Everything You Need to <span className="gradient-text">Recycle Smarter</span>
+              Everything You Need to{" "}
+              <span className="gradient-text">Recycle Smarter</span>
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
-              A complete recycling ecosystem designed for Filamer Christian University, powered by IoT and gamification.
+              A complete recycling ecosystem designed for Filamer Christian
+              University, powered by IoT and gamification.
             </p>
           </motion.div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -236,8 +287,12 @@ export default function LandingPage() {
                     <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                       <feature.icon className="text-primary" size={24} />
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    <h3 className="mb-2 text-lg font-semibold">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {feature.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -250,8 +305,12 @@ export default function LandingPage() {
       <section id="how-it-works" className="bg-card/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <motion.div {...fadeUp} className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">How It Works</h2>
-            <p className="text-muted-foreground">Four simple steps to start earning rewards</p>
+            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
+              How It Works
+            </h2>
+            <p className="text-muted-foreground">
+              Four simple steps to start earning rewards
+            </p>
           </motion.div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, i) => (
@@ -278,7 +337,9 @@ export default function LandingPage() {
       <section id="faq" className="bg-card/30 py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <motion.div {...fadeUp} className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Frequently Asked Questions</h2>
+            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
+              Frequently Asked Questions
+            </h2>
           </motion.div>
           <div className="space-y-4">
             {faqs.map((faq, i) => (
@@ -306,7 +367,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-12 lg:grid-cols-2">
             <motion.div {...fadeUp}>
-              <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Get In Touch</h2>
+              <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
+                Get In Touch
+              </h2>
               <p className="mb-8 text-muted-foreground">
                 Have questions about FilCycle? We&apos;d love to hear from you.
               </p>
@@ -327,7 +390,10 @@ export default function LandingPage() {
             </motion.div>
             <Card className="glass">
               <CardContent className="p-6">
-                <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                <form
+                  className="space-y-4"
+                  onSubmit={(e) => e.preventDefault()}
+                >
                   <div className="grid gap-4 sm:grid-cols-2">
                     <input
                       placeholder="First Name"
@@ -367,9 +433,15 @@ export default function LandingPage() {
               &copy; {new Date().getFullYear()} FilCycle. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
-              <a href="#" className="hover:text-primary transition-colors">Support</a>
+              <a href="#" className="hover:text-primary transition-colors">
+                Privacy
+              </a>
+              <a href="#" className="hover:text-primary transition-colors">
+                Terms
+              </a>
+              <a href="#" className="hover:text-primary transition-colors">
+                Support
+              </a>
             </div>
           </div>
         </div>

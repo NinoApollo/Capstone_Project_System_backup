@@ -19,6 +19,14 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const unreadOnly = searchParams.get("unread") === "true";
 
+  if (searchParams.get("countOnly") === "true") {
+    const unreadCount = await prisma.notification.count({
+      where: { userId: Number(session!.user.id), isRead: false },
+    });
+
+    return apiResponse({ notifications: [], unreadCount });
+  }
+
   const notifications = await prisma.notification.findMany({
     where: {
       userId: Number(session!.user.id),

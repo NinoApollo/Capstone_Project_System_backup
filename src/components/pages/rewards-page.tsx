@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Gift, Coffee, ShoppingBag, DollarSign, GraduationCap, CreditCard } from "lucide-react";
+import { Gift, DollarSign, Smartphone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,16 +21,23 @@ interface Reward {
 }
 
 const categoryIcons: Record<string, React.ElementType> = {
-  COFFEE_VOUCHER: Coffee,
-  MERCHANDISE: ShoppingBag,
-  CASH: DollarSign,
-  UNIVERSITY_POINTS: GraduationCap,
-  GIFT_CARD: CreditCard,
+  G_CASH: DollarSign,
+  LOAD: Smartphone,
 };
 
-export default function RewardsPage({ canRedeem = true }: { canRedeem?: boolean }) {
+const categoryLabels: Record<string, string> = {
+  G_CASH: "G-Cash",
+  LOAD: "Load",
+};
+
+export default function RewardsPage({
+  canRedeem = true,
+}: {
+  canRedeem?: boolean;
+}) {
   const { data: session } = useSession();
   const [rewards, setRewards] = useState<Reward[]>([]);
+  const [studentPoints, setStudentPoints] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [redeeming, setRedeeming] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -47,6 +54,19 @@ export default function RewardsPage({ canRedeem = true }: { canRedeem?: boolean 
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (!canRedeem) return;
+
+    fetch("/api/students")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success && typeof data.data?.rewardPoints === "number") {
+          setStudentPoints(data.data.rewardPoints);
+        }
+      })
+      .catch(() => {});
+  }, [canRedeem]);
+
   const handleRedeem = async (rewardId: string) => {
     setRedeeming(rewardId);
     try {
@@ -57,6 +77,12 @@ export default function RewardsPage({ canRedeem = true }: { canRedeem?: boolean 
       });
       const data = await res.json();
       if (data.success) {
+        const claimedReward = rewards.find((reward) => reward.id === rewardId);
+        if (claimedReward) {
+          setStudentPoints((points) =>
+            points === null ? points : points - claimedReward.pointsCost
+          );
+        }
         setShowConfetti(true);
         toast.success("Reward claimed! Pending staff approval.");
         setTimeout(() => setShowConfetti(false), 3000);
@@ -104,7 +130,14 @@ export default function RewardsPage({ canRedeem = true }: { canRedeem?: boolean 
       )}
       <div>
         <h1 className="text-2xl font-bold">Reward Catalog</h1>
-        <p className="text-muted-foreground">Redeem your points for exclusive rewards</p>
+        <p className="text-muted-foreground">
+          Redeem your points for exclusive rewards
+        </p>
+        {canRedeem && (
+          <p className="mt-2 text-sm font-medium text-primary">
+            Your points: {studentPoints === null ? "Loading..." : studentPoints}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -119,6 +152,9 @@ export default function RewardsPage({ canRedeem = true }: { canRedeem?: boolean 
                 <CardTitle className="text-base">{reward.name}</CardTitle>
                 <p className="text-xs text-muted-foreground line-clamp-2">
                   {reward.description}
+                </p>
+                <p className="mt-2 text-xs font-medium text-primary">
+                  {categoryLabels[reward.category] ?? reward.category}
                 </p>
               </CardHeader>
               <CardContent>

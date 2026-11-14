@@ -35,11 +35,15 @@ export default function NotificationsPage() {
   }, []);
 
   const markAllRead = async () => {
-    await fetch("/api/notifications", {
+    const response = await fetch("/api/notifications", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ markAll: true }),
     });
+
+    if (!response.ok) return;
+
+    window.dispatchEvent(new Event("notifications:changed"));
     fetchNotifications();
   };
 
@@ -62,7 +66,12 @@ export default function NotificationsPage() {
           <h1 className="text-2xl font-bold">Notifications</h1>
           <p className="text-muted-foreground">Stay updated on your activity</p>
         </div>
-        <Button variant="outline" size="sm" onClick={markAllRead} className="gap-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={markAllRead}
+          className="gap-1"
+        >
           <CheckCheck size={14} />
           Mark all read
         </Button>

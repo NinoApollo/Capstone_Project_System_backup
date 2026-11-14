@@ -9,8 +9,9 @@ const studentIdSchema = z
   .string()
   .max(STUDENT_ID_MAX_LENGTH, "Student ID must not exceed 13 characters")
   .refine(
-    (value) => STUDENT_ID_PATTERN.test(value) || LEGACY_STUDENT_ID_PATTERN.test(value),
-    "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)"
+    (value) =>
+      STUDENT_ID_PATTERN.test(value) || LEGACY_STUDENT_ID_PATTERN.test(value),
+    "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)",
   );
 
 export const loginSchema = z.object({
@@ -41,13 +42,7 @@ export const rewardRedemptionSchema = z.object({
 export const rewardCreateSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  category: z.enum([
-    "COFFEE_VOUCHER",
-    "MERCHANDISE",
-    "CASH",
-    "UNIVERSITY_POINTS",
-    "GIFT_CARD",
-  ]),
+  category: z.enum(["G_CASH", "LOAD"]),
   pointsCost: z.number().min(1),
   stock: z.number().min(0),
   imageUrl: z.string().optional(),
@@ -58,7 +53,10 @@ export const studentCreateSchema = z.object({
     .string()
     .min(1)
     .max(STUDENT_ID_MAX_LENGTH, "Student ID must not exceed 13 characters")
-    .regex(STUDENT_ID_PATTERN, "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)"),
+    .regex(
+      STUDENT_ID_PATTERN,
+      "Student ID format: YY-CODE-NNNN (e.g. 23-CCS1-0156)",
+    ),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email().optional().or(z.literal("")),

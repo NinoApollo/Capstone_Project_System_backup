@@ -9,10 +9,20 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { AUTH_PENDING_KEY } from "@/lib/constants/auth";
-import { formatStudentIdInput, STUDENT_ID_MAX_LENGTH } from "@/lib/utils/student-id";
+import {
+  formatStudentIdInput,
+  STUDENT_ID_MAX_LENGTH,
+  STUDENT_ID_PATTERN,
+} from "@/lib/utils/student-id";
 
 const COURSES = [
   "BS Computer Science",
@@ -42,6 +52,31 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !form.studentId.trim() ||
+      !form.fullName.trim() ||
+      !form.email.trim() ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      toast.error("Please complete all required fields.");
+      return;
+    }
+
+    if (
+      !STUDENT_ID_PATTERN.test(form.studentId.trim().toUpperCase()) ||
+      form.password.length < 6
+    ) {
+      toast.error("Invalid username or invalid password");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -53,16 +88,26 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!data.success) {
-        toast.error(data.error || "Registration failed");
+        const errorMessage = String(data.error ?? "");
+        const isNetworkError =
+          /fetch failed|failed to fetch|network error/i.test(errorMessage);
+
+        toast.error(
+          isNetworkError
+            ? "Could not connect to the verification service. Please try again later."
+            : errorMessage || "Registration failed",
+        );
         return;
       }
 
       sessionStorage.setItem(
         AUTH_PENDING_KEY,
-        JSON.stringify({ studentId: form.studentId, password: form.password })
+        JSON.stringify({ studentId: form.studentId, password: form.password }),
       );
 
-      toast.success("Registration successful! Check your email for the verification code.");
+      toast.success(
+        "Registration successful! Check your email for the verification code.",
+      );
 
       const params = new URLSearchParams({
         studentId: form.studentId,
@@ -100,7 +145,9 @@ export default function RegisterPage() {
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#7ED957]/10">
               <UserPlus className="text-[#7ED957]" size={24} />
             </div>
-            <CardTitle className="text-2xl text-white">Student Registration</CardTitle>
+            <CardTitle className="text-2xl text-white">
+              Student Registration
+            </CardTitle>
             <CardDescription className="text-slate-400">
               Create your FilCycle account with your university Student ID
             </CardDescription>
@@ -117,7 +164,9 @@ export default function RegisterPage() {
                     id="studentId"
                     placeholder="e.g. 23-CCS1-0156"
                     value={form.studentId}
-                    onChange={(e) => update("studentId", formatStudentIdInput(e.target.value))}
+                    onChange={(e) =>
+                      update("studentId", formatStudentIdInput(e.target.value))
+                    }
                     className="border-white/10 bg-white/5 text-white placeholder:text-slate-500"
                     inputMode="text"
                     maxLength={STUDENT_ID_MAX_LENGTH}

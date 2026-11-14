@@ -8,14 +8,14 @@ A full-stack recycling management platform for **Filamer Christian University (F
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, React, TypeScript, TailwindCSS, shadcn/ui, Framer Motion |
-| Backend | Next.js API Routes, Prisma ORM |
-| Database | MySQL |
-| Auth | NextAuth (JWT, Role-Based, Email OTP) |
-| Charts | Recharts |
-| Notifications | Sonner |
+| Layer         | Technology                                                           |
+| ------------- | -------------------------------------------------------------------- |
+| Frontend      | Next.js 15, React, TypeScript, TailwindCSS, shadcn/ui, Framer Motion |
+| Backend       | Next.js API Routes, Prisma ORM                                       |
+| Database      | MySQL                                                                |
+| Auth          | NextAuth (JWT, Role-Based, Email OTP)                                |
+| Charts        | Recharts                                                             |
+| Notifications | Sonner                                                               |
 
 ## Features
 
@@ -95,11 +95,11 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Demo Credentials
 
-| Role | Login | Password |
-|------|-------|----------|
-| Administrator | admin@filamer.edu | admin123 |
-| Staff | staff@filamer.edu | staff123 |
-| Student | 21-CCS1-0001 | student123 |
+| Role          | Login             | Password   |
+| ------------- | ----------------- | ---------- |
+| Administrator | admin@filamer.edu | admin123   |
+| Staff         | staff@filamer.edu | staff123   |
+| Student       | 21-CCS1-0001      | student123 |
 
 Students login with **Student ID** (not email).
 
@@ -140,17 +140,17 @@ Replace `Simulated*` classes with real device drivers without changing the appli
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/bottles/submit` | Submit a bottle for recycling |
-| GET | `/api/dashboard/stats` | Admin dashboard statistics |
-| GET | `/api/leaderboard` | Leaderboard data |
-| GET/POST/PUT | `/api/rewards` | Reward catalog & redemption |
-| GET | `/api/transactions` | Transaction history |
-| GET/PUT/POST | `/api/machine` | Machine monitoring |
-| GET/PUT | `/api/notifications` | User notifications |
-| GET | `/api/reports` | Generate reports |
-| GET/POST | `/api/students` | Student management |
+| Method       | Endpoint               | Description                   |
+| ------------ | ---------------------- | ----------------------------- |
+| POST         | `/api/bottles/submit`  | Submit a bottle for recycling |
+| GET          | `/api/dashboard/stats` | Admin dashboard statistics    |
+| GET          | `/api/leaderboard`     | Leaderboard data              |
+| GET/POST/PUT | `/api/rewards`         | Reward catalog & redemption   |
+| GET          | `/api/transactions`    | Transaction history           |
+| GET/PUT/POST | `/api/machine`         | Machine monitoring            |
+| GET/PUT      | `/api/notifications`   | User notifications            |
+| GET          | `/api/reports`         | Generate reports              |
+| GET/POST     | `/api/students`        | Student management            |
 
 ## License
 

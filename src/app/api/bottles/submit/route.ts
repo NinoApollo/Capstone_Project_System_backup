@@ -55,6 +55,10 @@ export async function POST(request: NextRequest) {
 
   const validation = await hardware.bottleValidator.validate();
 
+  if (!validation.detected) {
+    return apiError("No bottle detected. Insert a bottle and try again.", 422);
+  }
+
   if (!validation.isValid) {
     await hardware.machineController.rejectBottle();
     await logMachineEvent(
